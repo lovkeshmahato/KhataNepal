@@ -60,6 +60,22 @@ docker compose up -d --build
 
 Runs Postgres, Redis, the API (runs pending migrations on boot, then serves on :4000), and the web app (:3000).
 
+### Deploying to shared hosting (Hostinger / cPanel-style Node.js App Selector)
+
+This kind of hosting has no Docker step — it clones the repo, runs an install command, runs a build command, then runs one specific JS file as a persistent process (what the panel calls the "Application startup file"). Since this repo has **two separate deployable services**, you need **two Node.js app entries** in the panel (typically on two subdomains, e.g. `api.yourdomain.com` and `app.yourdomain.com`):
+
+| | Application root | Install command | Build command | Application startup file |
+|---|---|---|---|---|
+| **API** | repo root | `pnpm install` | `npm run build` | `apps/api/dist/main.js` |
+| **Web** | repo root | `pnpm install` | `npm run build` | `apps/web/.next/standalone/apps/web/server.js` |
+
+Notes:
+- `npm run build` (not `pnpm build`) is intentional — see the `build` script in the root `package.json`; it doesn't require `pnpm` to be on `PATH` during the build phase, only during install.
+- The web app's `postbuild` script (`apps/web/scripts/copy-standalone-assets.js`) copies `public/` and `.next/static/` into the traced standalone output automatically, so `apps/web/.next/standalone/apps/web/server.js` is a fully self-contained server as soon as the build finishes — no extra manual copy step.
+- Set `PORT` for each app in the panel's environment variables if it doesn't inject one automatically (both the Nest API and the Next.js standalone server read `process.env.PORT`).
+- Set the required env vars from `.env.example` (`DATABASE_URL`, `REDIS_URL`, `JWT_*_SECRET`, `NEXT_PUBLIC_API_URL` pointed at the API's public URL, etc.) on **both** app entries before starting them.
+- After the build finishes, the panel needs an explicit "Restart"/"Start" action to actually launch the process — a successful build does not by itself mean the app is running. A 403 with the exact text "Access to this resource on the server is denied!" from the web server (not from this app) almost always means no Node process is bound to that domain yet — double check the startup file path and restart.
+
 ## What's implemented
 
 **Backend (`apps/api`)** — full REST API with global JWT auth guard, permission-based RBAC guard, Prisma-backed audit log on every mutating request, and Redis-cached report endpoints:

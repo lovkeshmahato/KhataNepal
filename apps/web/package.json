@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
+    "postbuild": "node scripts/copy-standalone-assets.js",
     "start": "next start",
+    "start:standalone": "node .next/standalone/apps/web/server.js",
     "lint": "eslint . --max-warnings 0",
     "typecheck": "tsc --noEmit"
   },
