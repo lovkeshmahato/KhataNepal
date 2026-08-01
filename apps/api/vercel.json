@@ -1,0 +1,6 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "cd ../.. && pnpm install",
+  "buildCommand": "cd ../.. && npm --prefix packages/types run build && npm --prefix apps/api run build",
+  "rewrites": [{ "source": "/(.*)", "destination": "/api" }]
+}

@@ -86,6 +86,20 @@ Serving `apps/web` from one host (Vercel, Netlify, ...) and `apps/api` from anot
 
 All three live in `.env.example`. If login returns a 200 with a user object but you're logged out again on refresh, that's #3 — the cookie isn't being accepted cross-site.
 
+### Deploying the API itself on Vercel
+
+Vercel doesn't run persistent servers — `main.ts`'s `app.listen(port)` never gets called there. `apps/api` ships a serverless entry point for this (`apps/api/api/index.js`) that boots the same Nest app on demand and reuses it across warm invocations, so behavior is otherwise identical to the Docker/Hostinger deployment.
+
+Import the repo into a **separate** Vercel project with **Root Directory set to `apps/api`** (it needs its own project from `apps/web`, since they're different services). `apps/api/vercel.json` handles install/build/routing automatically — nothing to configure there. Set these environment variables on that project, then deploy:
+
+- `DATABASE_URL`, `REDIS_URL` — must be reachable from Vercel's network, so `localhost` only works if the DB/Redis are also on Vercel-reachable infrastructure (a managed Postgres/Redis with a public or VPC-peered endpoint).
+- `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `BCRYPT_SALT_ROUNDS`
+- `CORS_ORIGIN` — the web app's Vercel URL (or your custom domain)
+- `COOKIE_SAME_SITE=none` — required whenever the web app is on a different domain (see above); Vercel always serves over HTTPS, so this is safe to set unconditionally here
+- Everything else from `.env.example` you actually use (payment gateway keys, `AI_INSIGHTS_PROVIDER`, etc.)
+
+One thing serverless genuinely changes here, worth knowing rather than discovering under load: each cold-started function instance opens its own Postgres connection via Prisma, and unlike a persistent server there can be many instances running concurrently — a burst of traffic can exhaust your database's connection limit. If you hit `too many connections` errors, put a connection pooler in front of Postgres (e.g. your provider's built-in pooler/PgBouncer, or [Prisma Accelerate](https://www.prisma.io/accelerate)) and point `DATABASE_URL` at the pooled endpoint instead of the direct one.
+
 ## What's implemented
 
 **Backend (`apps/api`)** — full REST API with global JWT auth guard, permission-based RBAC guard, Prisma-backed audit log on every mutating request, and Redis-cached report endpoints:
