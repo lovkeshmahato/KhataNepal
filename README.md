@@ -76,6 +76,16 @@ Notes:
 - Set the required env vars from `.env.example` (`DATABASE_URL`, `REDIS_URL`, `JWT_*_SECRET`, `NEXT_PUBLIC_API_URL` pointed at the API's public URL, etc.) on **both** app entries before starting them.
 - After the build finishes, the panel needs an explicit "Restart"/"Start" action to actually launch the process — a successful build does not by itself mean the app is running. A 403 with the exact text "Access to this resource on the server is denied!" from the web server (not from this app) almost always means no Node process is bound to that domain yet — double check the startup file path and restart.
 
+### Deploying the frontend and API on different domains (e.g. web on Vercel)
+
+Serving `apps/web` from one host (Vercel, Netlify, ...) and `apps/api` from another makes every request **cross-site**, which needs three things set correctly or login will silently fail:
+
+1. **`NEXT_PUBLIC_API_URL`** on the frontend host, set to the API's public HTTPS URL (e.g. `https://api.yourdomain.com/api/v1`). This is a build-time env var in Next.js — after adding/changing it you must trigger a new deployment, not just save it in the dashboard.
+2. **`CORS_ORIGIN`** on the API, set to the frontend's exact URL (comma-separate multiple, e.g. a Vercel production URL plus its preview URLs). Without this the browser blocks every request with a CORS error before it even reaches this app.
+3. **`COOKIE_SAME_SITE=none`** on the API. The login/refresh flow uses an httpOnly cookie; browsers only send `SameSite=Lax` (the default) cookies on same-site requests, so a split-domain deployment needs `SameSite=None` — which in turn requires the API to be served over real HTTPS (a bare IP or self-signed cert won't work; the browser silently drops the cookie).
+
+All three live in `.env.example`. If login returns a 200 with a user object but you're logged out again on refresh, that's #3 — the cookie isn't being accepted cross-site.
+
 ## What's implemented
 
 **Backend (`apps/api`)** — full REST API with global JWT auth guard, permission-based RBAC guard, Prisma-backed audit log on every mutating request, and Redis-cached report endpoints:

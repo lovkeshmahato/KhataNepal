@@ -2,7 +2,8 @@ export interface AppConfig {
   nodeEnv: string;
   port: number;
   apiPrefix: string;
-  corsOrigin: string;
+  corsOrigins: string[];
+  cookieSameSite: "lax" | "none" | "strict";
   database: { url: string };
   redis: { url: string };
   jwt: {
@@ -23,7 +24,20 @@ export default (): AppConfig => ({
   nodeEnv: process.env.NODE_ENV ?? "development",
   port: parseInt(process.env.API_PORT ?? "4000", 10),
   apiPrefix: process.env.API_PREFIX ?? "api/v1",
-  corsOrigin: process.env.CORS_ORIGIN ?? "http://localhost:3000",
+  // Comma-separated list — needed because a Vercel-hosted frontend (or any
+  // frontend on a different domain than this API) makes cross-site
+  // requests, and CORS only allows origins explicitly listed here.
+  corsOrigins: (process.env.CORS_ORIGIN ?? "http://localhost:3000")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean),
+  // "lax" only works when the frontend and this API share the same
+  // registrable domain (e.g. both on localhost, or same-site subdomains).
+  // A split deployment (e.g. frontend on Vercel, API elsewhere) is
+  // cross-site, so the refresh-token cookie needs SameSite=None — which
+  // browsers only honor when the cookie is also Secure (HTTPS). Set
+  // COOKIE_SAME_SITE=none once the API is served over HTTPS.
+  cookieSameSite: (process.env.COOKIE_SAME_SITE as "lax" | "none" | "strict" | undefined) ?? "lax",
   database: {
     url: process.env.DATABASE_URL ?? "",
   },

@@ -55,10 +55,16 @@ export class AuthController {
   }
 
   private setRefreshCookie(res: Response, token: string, expiresAt: Date) {
+    const sameSite = this.config.get<"lax" | "none" | "strict">("cookieSameSite")!;
     res.cookie(REFRESH_COOKIE, token, {
       httpOnly: true,
-      secure: this.config.get<string>("nodeEnv") === "production",
-      sameSite: "lax",
+      // SameSite=None is only valid on cookies also marked Secure — the
+      // browser silently drops it otherwise. Cross-site deployments (e.g.
+      // Vercel frontend + API on another domain) must set
+      // COOKIE_SAME_SITE=none, which forces this to true regardless of
+      // NODE_ENV, since that combination is meaningless without HTTPS.
+      secure: sameSite === "none" || this.config.get<string>("nodeEnv") === "production",
+      sameSite,
       expires: expiresAt,
       path: "/api/v1/auth",
     });
