@@ -8,8 +8,10 @@
     "node": ">=20"
   },
   "scripts": {
+    "postinstall": "chmod -R +x node_modules/.bin apps/*/node_modules/.bin packages/*/node_modules/.bin 2>/dev/null || true",
     "dev": "turbo run dev",
-    "build": "turbo run build",
+    "build": "pnpm --filter @khatanepal/types build && pnpm --filter @khatanepal/api build && pnpm --filter @khatanepal/web build",
+    "build:turbo": "turbo run build",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
