@@ -10,7 +10,7 @@
   "scripts": {
     "postinstall": "chmod -R +x node_modules/.bin apps/*/node_modules/.bin packages/*/node_modules/.bin 2>/dev/null || true",
     "dev": "turbo run dev",
-    "build": "pnpm --filter @khatanepal/types build && pnpm --filter @khatanepal/api build && pnpm --filter @khatanepal/web build",
+    "build": "npm --prefix packages/types run build && npm --prefix apps/api run build && npm --prefix apps/web run build",
     "build:turbo": "turbo run build",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
