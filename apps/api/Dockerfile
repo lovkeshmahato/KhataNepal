@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 FROM node:22-alpine AS base
-RUN corepack enable && corepack prepare pnpm@11.8.0 --activate
+RUN corepack enable && corepack prepare pnpm@11.18.0 --activate
 WORKDIR /repo
 
 # ─── Install dependencies (cached layer) ───────────────────────────────────
@@ -21,7 +21,7 @@ RUN pnpm --filter @khatanepal/api build
 
 # ─── Runtime ────────────────────────────────────────────────────────────────
 FROM node:22-alpine AS runner
-RUN corepack enable && corepack prepare pnpm@11.8.0 --activate
+RUN corepack enable && corepack prepare pnpm@11.18.0 --activate
 WORKDIR /repo
 ENV NODE_ENV=production
 

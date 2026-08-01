@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "KhataNepal — enterprise POS & retail management platform for Nepali supermarkets",
-  "packageManager": "pnpm@11.8.0",
+  "packageManager": "pnpm@11.18.0",
   "engines": {
     "node": ">=20"
   },
