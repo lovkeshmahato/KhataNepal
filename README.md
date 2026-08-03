@@ -94,6 +94,22 @@ After saving, hit **Restart**/**Start** on each app — a finished build does no
 - **Build fails with a pnpm/turbo error** — shouldn't happen anymore; both apps only use `npm`, nothing else. If you see `pnpm` or `turbo` mentioned in an error, you're likely looking at build settings left over from an older deploy attempt — recheck the install/build commands above.
 - **Login "succeeds" but you're logged out again right away** — means the API's `CORS_ORIGIN` doesn't exactly match the website's URL, or the API isn't being served over HTTPS. Both are required for the login cookie to work once the site and API are on different domains.
 
+## Deploying on Vercel
+
+`apps/web` and `apps/api` need **two separate Vercel projects** (they're different services) — import this repo twice, setting **Root Directory** to `apps/web` for one and `apps/api` for the other.
+
+**`apps/web`** — just works. It's a standard Next.js app with no special config needed. Set `NEXT_PUBLIC_API_URL` to your API's public URL (`.../api/v1`) in that project's environment variables, and redeploy after changing it — it's baked in at build time, so saving alone doesn't apply it.
+
+**`apps/api`** — Vercel doesn't run a persistent server, so this needs `apps/api/api/index.js`, a serverless handler that boots the same Nest app on demand and reuses it across warm invocations (already included, nothing to configure — `apps/api/vercel.json` handles install/build/routing). Set these environment variables on that project:
+
+- `DATABASE_URL`, `REDIS_URL` — must be reachable from Vercel's network (a managed Postgres/Redis with a public or VPC-peered endpoint; `localhost` won't work)
+- `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `BCRYPT_SALT_ROUNDS`
+- `CORS_ORIGIN` — the web project's Vercel URL
+- `COOKIE_SAME_SITE=none` — required since the two projects are on different domains; safe to set unconditionally here since Vercel always serves over HTTPS
+- Anything else from `apps/api/.env.example` you actually use
+
+One real tradeoff worth knowing before you hit it under load rather than during it: each cold-started function opens its own Postgres connection via Prisma, and unlike a persistent server there can be many running concurrently — a traffic burst can exhaust your database's connection limit. If you see `too many connections` errors, put a pooler in front of Postgres (your provider's built-in one, PgBouncer, or [Prisma Accelerate](https://www.prisma.io/accelerate)) and point `DATABASE_URL` at the pooled endpoint.
+
 ## Docker (self-hosting anywhere else)
 
 ```bash
