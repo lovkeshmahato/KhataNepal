@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import type { CreateCustomerInput } from "@khatanepal/types";
+import type { CreateCustomerInput } from "../../shared-types";
 import { PrismaService } from "../../common/prisma/prisma.service";
 
 @Injectable()

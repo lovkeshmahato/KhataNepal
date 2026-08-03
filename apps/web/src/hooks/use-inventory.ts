@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { StockAdjustmentInput } from "@khatanepal/types";
+import type { StockAdjustmentInput } from "@/lib/shared-types";
 import { api } from "@/lib/api-client";
 
 export interface StockItem {

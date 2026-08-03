@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Query } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
-import { PERMISSIONS, stockAdjustmentSchema } from "@khatanepal/types";
+import { PERMISSIONS, stockAdjustmentSchema } from "../../shared-types";
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
 import { RequirePermissions } from "../../common/decorators/permissions.decorator";
 import { InventoryService } from "./inventory.service";

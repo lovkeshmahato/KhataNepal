@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../../common/prisma/prisma.service";
-import type { CreateSupplierInput } from "@khatanepal/types";
+import type { CreateSupplierInput } from "../../shared-types";
 
 @Injectable()
 export class SuppliersService {

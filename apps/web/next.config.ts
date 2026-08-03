@@ -3,9 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   output: "standalone",
-  transpilePackages: ["@khatanepal/types"],
   eslint: {
-    // Linting is run separately via `pnpm lint`; keep builds fast and
+    // Linting is run separately via `npm run lint`; keep builds fast and
     // focused on type/runtime correctness.
     ignoreDuringBuilds: true,
   },

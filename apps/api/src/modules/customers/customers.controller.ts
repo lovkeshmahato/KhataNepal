@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Patch, Post, Query } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
-import { PERMISSIONS, createCustomerSchema } from "@khatanepal/types";
+import { PERMISSIONS, createCustomerSchema } from "../../shared-types";
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
 import { RequirePermissions } from "../../common/decorators/permissions.decorator";
 import { CustomersService } from "./customers.service";

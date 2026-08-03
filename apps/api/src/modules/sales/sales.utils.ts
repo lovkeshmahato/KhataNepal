@@ -1,4 +1,4 @@
-import type { DiscountType } from "@khatanepal/types";
+import type { DiscountType } from "../../shared-types";
 
 export interface SaleTotalLineInput {
   productId: string;

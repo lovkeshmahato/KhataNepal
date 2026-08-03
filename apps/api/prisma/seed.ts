@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import * as bcrypt from "bcrypt";
-import { ROLE_PERMISSIONS, SYSTEM_ROLES } from "@khatanepal/types";
+import { ROLE_PERMISSIONS, SYSTEM_ROLES } from "../src/shared-types";
 
 const prisma = new PrismaClient();
 

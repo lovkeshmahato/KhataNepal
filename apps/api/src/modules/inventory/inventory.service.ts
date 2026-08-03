@@ -3,7 +3,7 @@ import type { Prisma, StockMovementType } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
 import { PrismaService } from "../../common/prisma/prisma.service";
 import { AuditService } from "../../common/audit/audit.service";
-import type { StockAdjustmentInput } from "@khatanepal/types";
+import type { StockAdjustmentInput } from "../../shared-types";
 
 type Tx = Prisma.TransactionClient;
 

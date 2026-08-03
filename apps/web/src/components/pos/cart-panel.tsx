@@ -10,7 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { useCartStore, type CartLine } from "@/stores/cart-store";
 import { useCustomers } from "@/hooks/use-customers";
 import { formatCurrency, cn } from "@/lib/utils";
-import type { PaymentMethod } from "@khatanepal/types";
+import type { PaymentMethod } from "@/lib/shared-types";
 import { calculateSaleTotalsPreview } from "@/lib/pos-calculations";
 
 const PAYMENT_OPTIONS: { value: PaymentMethod; label: string }[] = [

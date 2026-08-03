@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api-client";
 import { useAuthStore } from "@/stores/auth-store";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import { formatAdAsBs } from "@khatanepal/types";
+import { formatAdAsBs } from "@/lib/shared-types";
 
 interface DashboardData {
   today: { saleCount: number; total: number };

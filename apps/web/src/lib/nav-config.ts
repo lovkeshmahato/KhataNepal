@@ -11,7 +11,7 @@ import {
   Settings,
   Sparkles,
 } from "lucide-react";
-import { PERMISSIONS, type Permission } from "@khatanepal/types";
+import { PERMISSIONS, type Permission } from "@/lib/shared-types";
 
 export interface NavItem {
   label: string;

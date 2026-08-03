@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import type { CreatePurchaseOrderInput } from "@khatanepal/types";
+import type { CreatePurchaseOrderInput } from "../../shared-types";
 import { PrismaService } from "../../common/prisma/prisma.service";
 import { InventoryService } from "../inventory/inventory.service";
 import { AccountingService } from "../accounting/accounting.service";

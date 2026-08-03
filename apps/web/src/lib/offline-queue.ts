@@ -1,5 +1,5 @@
 import { openDB, type IDBPDatabase } from "idb";
-import type { CreateSaleInput } from "@khatanepal/types";
+import type { CreateSaleInput } from "@/lib/shared-types";
 
 const DB_NAME = "khatanepal-offline";
 const STORE = "pending-sales";

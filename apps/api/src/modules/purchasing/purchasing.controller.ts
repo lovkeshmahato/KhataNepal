@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Patch, Post, Query } from "@nestjs/common
 import { ApiTags } from "@nestjs/swagger";
 import { ArrayMinSize, IsArray, IsNumber, IsOptional, IsString, Min, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
-import { PERMISSIONS, createPurchaseOrderSchema, createSupplierSchema } from "@khatanepal/types";
+import { PERMISSIONS, createPurchaseOrderSchema, createSupplierSchema } from "../../shared-types";
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
 import { RequirePermissions } from "../../common/decorators/permissions.decorator";
 import { SuppliersService } from "./suppliers.service";

@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, Query } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
-import { PERMISSIONS, createSaleSchema } from "@khatanepal/types";
+import { PERMISSIONS, createSaleSchema } from "../../shared-types";
 import { IsString, MinLength } from "class-validator";
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
 import { RequirePermissions } from "../../common/decorators/permissions.decorator";

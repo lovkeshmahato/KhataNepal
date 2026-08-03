@@ -1,4 +1,4 @@
-import type { ApiErrorBody } from "@khatanepal/types";
+import type { ApiErrorBody } from "@/lib/shared-types";
 import { useAuthStore } from "@/stores/auth-store";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api/v1";

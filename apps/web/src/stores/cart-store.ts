@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { DiscountType } from "@khatanepal/types";
+import type { DiscountType } from "@/lib/shared-types";
 
 export interface CartLine {
   productId: string;

@@ -1,40 +1,27 @@
 # syntax=docker/dockerfile:1
+# Self-contained build — this Dockerfile only ever looks inside apps/api.
+# Build from the repo root with: docker build -f apps/api/Dockerfile apps/api
 
-FROM node:22-alpine AS base
-RUN corepack enable && corepack prepare pnpm@11.18.0 --activate
-WORKDIR /repo
+FROM node:22-alpine AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
 
-# ─── Install dependencies (cached layer) ───────────────────────────────────
-FROM base AS deps
-COPY pnpm-workspace.yaml package.json ./
-COPY apps/api/package.json apps/api/package.json
-COPY packages/types/package.json packages/types/package.json
-RUN pnpm install --frozen-lockfile --filter @khatanepal/api...
-
-# ─── Build ──────────────────────────────────────────────────────────────────
-FROM base AS build
-COPY --from=deps /repo /repo
-COPY packages/types packages/types
-COPY apps/api apps/api
-RUN pnpm --filter @khatanepal/api prisma:generate
-RUN pnpm --filter @khatanepal/api build
-
-# ─── Runtime ────────────────────────────────────────────────────────────────
 FROM node:22-alpine AS runner
-RUN corepack enable && corepack prepare pnpm@11.18.0 --activate
-WORKDIR /repo
+WORKDIR /app
 ENV NODE_ENV=production
 
-COPY --from=build /repo/pnpm-workspace.yaml /repo/package.json ./
-COPY --from=build /repo/apps/api/package.json apps/api/package.json
-COPY --from=build /repo/packages/types packages/types
-RUN pnpm install --frozen-lockfile --prod --filter @khatanepal/api...
+# Copy the full node_modules from the build stage rather than reinstalling
+# production-only deps here — this keeps the `prisma` CLI (a devDependency,
+# needed at container startup for `prisma migrate deploy`) available
+# without a network round-trip to npm at runtime.
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/package*.json ./
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/prisma ./prisma
 
-COPY --from=build /repo/apps/api/dist apps/api/dist
-COPY --from=build /repo/apps/api/prisma apps/api/prisma
-COPY --from=build /repo/apps/api/node_modules/.prisma apps/api/node_modules/.prisma
-
-WORKDIR /repo/apps/api
 EXPOSE 4000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s CMD wget -qO- http://localhost:4000/api/v1/health || exit 1
-CMD ["sh", "-c", "pnpm prisma:deploy && node dist/main.js"]
+CMD ["sh", "-c", "npm run prisma:deploy && node dist/main.js"]

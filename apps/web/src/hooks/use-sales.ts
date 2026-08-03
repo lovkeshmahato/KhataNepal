@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { CreateSaleInput } from "@khatanepal/types";
+import type { CreateSaleInput } from "@/lib/shared-types";
 import { api, ApiError } from "@/lib/api-client";
 import { flushOfflineQueue, queuedSaleCount, queueOfflineSale } from "@/lib/offline-queue";
 

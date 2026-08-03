@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { IsNumber, IsString, Min } from "class-validator";
-import { PERMISSIONS } from "@khatanepal/types";
+import { PERMISSIONS } from "../../shared-types";
 import { RequirePermissions } from "../../common/decorators/permissions.decorator";
 import { EsewaService } from "./esewa.service";
 import { KhaltiService } from "./khalti.service";

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { Permission } from "@khatanepal/types";
+import type { Permission } from "@/lib/shared-types";
 
 export interface AuthUser {
   id: string;

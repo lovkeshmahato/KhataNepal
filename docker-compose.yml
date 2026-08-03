@@ -33,11 +33,10 @@ services:
 
   api:
     build:
-      context: .
-      dockerfile: apps/api/Dockerfile
+      context: apps/api
     restart: unless-stopped
     env_file:
-      - .env
+      - apps/api/.env
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-khatanepal}:${POSTGRES_PASSWORD:-change_me_in_production}@postgres:5432/${POSTGRES_DB:-khatanepal}?schema=public
       REDIS_URL: redis://redis:6379
@@ -51,11 +50,10 @@ services:
 
   web:
     build:
-      context: .
-      dockerfile: apps/web/Dockerfile
+      context: apps/web
     restart: unless-stopped
     env_file:
-      - .env
+      - apps/web/.env
     environment:
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000/api/v1}
     ports:

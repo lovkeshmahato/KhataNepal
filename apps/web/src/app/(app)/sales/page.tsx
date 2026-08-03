@@ -16,7 +16,7 @@ import { useSales } from "@/hooks/use-sales";
 import { api, ApiError } from "@/lib/api-client";
 import { useQueryClient } from "@tanstack/react-query";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import { PERMISSIONS } from "@khatanepal/types";
+import { PERMISSIONS } from "@/lib/shared-types";
 
 const STATUS_VARIANT: Record<string, "default" | "secondary" | "success" | "warning" | "destructive"> = {
   COMPLETED: "success",

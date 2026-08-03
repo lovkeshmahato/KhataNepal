@@ -15,7 +15,7 @@ import { useCartStore } from "@/stores/cart-store";
 import { useCreateSale, useOfflineSync } from "@/hooks/use-sales";
 import { api, ApiError } from "@/lib/api-client";
 import type { Product } from "@/hooks/use-products";
-import type { CreateSaleInput } from "@khatanepal/types";
+import type { CreateSaleInput } from "@/lib/shared-types";
 
 export default function PosPage() {
   const activeBranchId = useAuthStore((s) => s.activeBranchId);
